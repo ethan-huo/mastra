@@ -9,13 +9,19 @@ import type { RollupWatcherEvent } from 'rollup';
 
 export class DevBundler extends Bundler {
   private customEnvFile?: string;
+  private skipEnv?: boolean;
 
-  constructor(customEnvFile?: string) {
+  constructor(customEnvFile?: string, skipEnv?: boolean) {
     super('Dev');
     this.customEnvFile = customEnvFile;
+    this.skipEnv = skipEnv;
   }
 
   getEnvFiles(): Promise<string[]> {
+    if (this.skipEnv) {
+      return Promise.resolve([]);
+    }
+
     const possibleFiles = ['.env.development', '.env.local', '.env'];
     if (this.customEnvFile) {
       possibleFiles.unshift(this.customEnvFile);

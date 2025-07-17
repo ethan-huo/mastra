@@ -183,6 +183,7 @@ program
   .option('-e, --env <env>', 'Custom env file to include in the dev server')
   .option('-i, --inspect', 'Start the dev server in inspect mode')
   .option('-b, --inspect-brk', 'Start the dev server in inspect mode and break at the beginning of the script')
+  .option('--skip-env', 'Skip loading .env files (useful when using external env injection like dotenvx)')
   .action(args => {
     analytics.trackCommand({
       command: 'dev',
@@ -201,6 +202,7 @@ program
       env: args?.env,
       inspect: args?.inspect && !args?.inspectBrk,
       inspectBrk: args?.inspectBrk,
+      skipEnv: args?.skipEnv,
     }).catch(err => {
       logger.error(err.message);
     });
@@ -213,6 +215,7 @@ program
   .option('-r, --root <path>', 'Path to your root folder')
   .option('-t, --tools <toolsDirs>', 'Comma-separated list of paths to tool files to include')
   .option('-e, --env <env>', 'Custom env file to include in the build')
+  .option('--skip-env', 'Skip loading .env files (useful when using external env injection like dotenvx)')
   .action(async args => {
     await analytics.trackCommandExecution({
       command: 'mastra build',
@@ -223,6 +226,7 @@ program
           root: args?.root,
           tools: args?.tools ? args.tools.split(',') : [],
           env: args?.env,
+          skipEnv: args?.skipEnv,
         });
       },
       origin,
