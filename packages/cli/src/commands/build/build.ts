@@ -11,11 +11,13 @@ export async function build({
   tools,
   root,
   env,
+  skipEnv,
 }: {
   dir?: string;
   tools?: string[];
   root?: string;
   env?: string;
+  skipEnv?: boolean;
 }) {
   const rootDir = root || process.cwd();
   const mastraDir = dir ? (dir.startsWith('/') ? dir : join(rootDir, dir)) : join(rootDir, 'src', 'mastra');
@@ -30,7 +32,7 @@ export async function build({
 
     const platformDeployer = await getDeployer(mastraEntryFile, outputDirectory);
     if (!platformDeployer) {
-      const deployer = new BuildBundler(env);
+      const deployer = new BuildBundler(env, skipEnv);
       deployer.__setLogger(logger);
       await deployer.prepare(outputDirectory);
       await deployer.bundle(mastraEntryFile, outputDirectory, discoveredTools);

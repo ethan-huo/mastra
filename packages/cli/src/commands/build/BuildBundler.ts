@@ -3,13 +3,19 @@ import { Bundler } from '@mastra/deployer/bundler';
 
 export class BuildBundler extends Bundler {
   private customEnvFile?: string;
+  private skipEnv?: boolean;
 
-  constructor(customEnvFile?: string) {
+  constructor(customEnvFile?: string, skipEnv?: boolean) {
     super('Build');
     this.customEnvFile = customEnvFile;
+    this.skipEnv = skipEnv;
   }
 
   getEnvFiles(): Promise<string[]> {
+    if (this.skipEnv) {
+      return Promise.resolve([]);
+    }
+
     const possibleFiles = ['.env.production', '.env.local', '.env'];
     if (this.customEnvFile) {
       possibleFiles.unshift(this.customEnvFile);
